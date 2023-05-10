@@ -1,3 +1,5 @@
+const Server = require("./Server");
+
 class Usuario{
     constructor(nombre,mail,password){
         this.nombre=nombre
@@ -7,3 +9,5 @@ class Usuario{
 }
 
 module.exports = Usuario;
+
+new Server().consolelogear()
