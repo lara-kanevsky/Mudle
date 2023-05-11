@@ -1,7 +1,9 @@
 class Evento{
-    constructor(){
-        fecha:"";
-        descripcion:"";
+    constructor(titulo,fecha,descripcion){
+        titulo:""
+        fecha:""
+        descripcion:""
+        aviso:true;
     }
 }
 

@@ -9,9 +9,10 @@ class App {
         this.items = []
     }
 
-    insertItem(){
-
+    insertarItem(usuario,item){
+        usuario.agregarItem(item)
     }
+
     insertUser() {
 
     }

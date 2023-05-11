@@ -6,7 +6,7 @@ const app = new App("Mudle")
 
 describe('Creacion de item',function() {
     it('',function(){
-        app.grabarItems()
+        app.insertItem()
         const resultado=app.items.length;
         console.log(app.items)
         assert.equal(resultado,10)
