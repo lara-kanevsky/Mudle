@@ -8,17 +8,6 @@ class App {
         this.eventos = []
         this.items = []
     }
-
-    insertItem(){
-
-    }
-    insertUser() {
-
-    }
-
-    insertEvent(){
-
-    }
 }
 
 module.exports = App;
