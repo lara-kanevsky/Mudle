@@ -1,8 +1,9 @@
 class Item{
-    constructor(){
-        parentNode:0;
-        title:"";
-        content:"";
+    constructor(titulo,contenido){
+        parentNode:0
+        titulo:""
+        contenido:""
+        etiquetas:[]
     }
 }
 
