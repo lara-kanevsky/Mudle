@@ -5,5 +5,7 @@ module.exports = {
         {username:"Larreta",mail:"Larreta@gmail.com",password:"laruwu"},
         {username:"uwu",mail:"uwu@gmail.com",password:"laruwu"},
         {username:"Kakaroto",mail:"Kakaroto@gmail.com",password:"laruwu"},
+        {username:"Marce",mail:"marcenbauer@gmail.com",password:"laruwu"}
     ]
+    
 };

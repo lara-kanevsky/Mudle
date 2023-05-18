@@ -1,0 +1,12 @@
+CREATE DATABASE Moodle;
+USE Moodle;
+CREATE TABLE items (
+    id_ITEM int identity(1,1),
+    parentNode_ITEM int,
+    title_ITEM varchar(max),
+);
+CREATE TABLE users(
+    id_USER int identity(1,1),
+    username_USER varchar(20),
+    password_USER varchar(20),
+);

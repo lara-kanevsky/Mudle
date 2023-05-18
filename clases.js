@@ -17,6 +17,6 @@ class Usuario{
     constructor(){
         username:"";
         mail:"";
-        password:"";
+        password:""; 
     }
 }
