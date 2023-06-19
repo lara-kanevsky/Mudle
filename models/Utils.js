@@ -30,7 +30,19 @@ function isArrayLike(obj){
   return false;
 }
 
+function fuseLefts(arrayOfLefts){
+  console.log("arrayOfLefts",arrayOfLefts[0].getLeft())
+  console.log("arrayOfLefts.reduce((previous,leftObj)=>previous.push(...leftObj.getLeft()),[])",arrayOfLefts.reduce((previous,leftObj)=>previous.push(...leftObj.getLeft()),[]))
+  return Either.left(arrayOfLefts.flatMap(leftObj=>leftObj.getLeft()));
+}
+
+function getRightResultsOrALeft(arrayOfEithers){
+  let lefts = arrayOfEithers.filter(eitherObj=>eitherObj.isLeft())
+  return lefts.length>0?fuseLefts(lefts):Either.right(arrayOfEithers.filter(eitherObj=>eitherObj.isRight()));
+}
+
 module.exports={
     basicValidator,
-    eitherServerResponseToUserResponse
+    eitherServerResponseToUserResponse,
+    getRightResultsOrALeft
 }

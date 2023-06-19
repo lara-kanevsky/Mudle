@@ -21,7 +21,7 @@ class MongoDBDAO{
 
   async insert(objeto){
     try{
-      let isValid = this.entityValidator(objeto)
+      let isValid = await this.entityValidator(objeto,this)
       if(isValid.isLeft()){
         return Either.left(new ServerResponse(400,isValid.getLeft()))
       }
@@ -45,28 +45,25 @@ class MongoDBDAO{
 
   async delete(id){
 
-    const filter = { id:{$eq: id} };
-    const result = await this.coleccion.deleteMany(filter);
+    // const filter = { id:{$eq: id} };
+    const result = await this.coleccion.deleteMany();
   
     console.log(`${result.deletedCount} document(s) deleted.`);
     return this.resultIsSuccessful(result)?Either.right(id):Either.left("No se borro correctamente")
   }
 
-  async read(idOFiltroONada){
-    // let filtro
-    // if(idOFiltroONada===undefined){
-
-    // }
-      //Separar rutas, si se pasa una funcion entonces es una para filtrar. Si se pasa un id es para traer uno. Si no se pasa nada es para traer todo. (funciones separadas!!)
-
-  // const filter = { age: { $gte: 18 } };
-
-  const result = await this.coleccion.find().toArray();
-  return result;
+  async read(filtro){
+    try{
+      const resultado = await this.coleccion.find(filtro).toArray();
+      console.log("resultado",resultado)
+      return this.resultIsSuccessful(resultado)?Either.right(new ServerResponse(200,[],resultado)):Either.left(new ServerResponse(500,["Error reading from DB."]));
+    }catch(exception){
+      return Either.left(new ServerResponse(500,[exception]))
+    }
   }
 
     resultIsSuccessful(result){
-      return result.acknowledged;
+      return result.acknowledged || result.length!=null;
     }
 }
 module.exports = MongoDBDAO;

@@ -11,10 +11,19 @@ class UsuariosLogic{
         this.DAO = new MongoDBDAO("usuarios",this.isValidInsert);
     }
 
-    isValidInsert(inputUser){
+    async isValidInsert(inputUser,DAO){
         let isValid = Utils.basicValidator(new Usuario(),inputUser);
-        //TODO: Checkear email existente
-        return isValid;
+        console.log("isValid",isValid)
+        //console.log("DAO",DAO)
+        let mailFoundResponse = await DAO.read({mail:inputUser.mail});
+        console.log("mailFoundResponse",mailFoundResponse.getRight().content)
+        let mailWasNotFound = (mailFoundResponse.isRight()&& mailFoundResponse.getRight().content.length==0)?Either.right():Either.left(["Mail already in use."]);
+        console.log("mailWasFound",mailWasNotFound);
+        let result = Utils.getRightResultsOrALeft([isValid,mailWasNotFound])
+        console.log("fused",result)
+
+            return result;
+
     }
 }
 

@@ -1,7 +1,8 @@
 class ServerResponse{
-    constructor(status,errors){
+    constructor(status,errors,content){
         this.status = status;
         this.errors = errors??[];
+        this.content = content??"";
     }
     translateToUser(){
         if(this.errors.length==0){
