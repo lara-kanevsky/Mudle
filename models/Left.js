@@ -1,5 +1,8 @@
 const Either = require('./Either.js')
-module.exports = class Left extends Either {
+class Left {
+  constructor(value){
+    this.value = value;
+    }
     isLeft() {
       return true;
     }
@@ -20,3 +23,4 @@ module.exports = class Left extends Either {
       throw new Error('Cannot get value from Left');
     }
   }
+  module.exports = Left

@@ -1,5 +1,9 @@
 const Either = require('./Either.js')
-module.exports = class Right extends Either {
+module.exports = class Right {
+constructor(value){
+this.value = value;
+}
+
     isLeft() {
       return false;
     }

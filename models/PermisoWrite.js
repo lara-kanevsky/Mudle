@@ -1,0 +1,4 @@
+class PermisoWrite{
+    
+}
+//BORRAR
