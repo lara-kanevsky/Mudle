@@ -29,10 +29,31 @@ class UsuariosLogic{
     getInstance(inputObj){
         return Utils.getObjectInstance(new Usuario(),inputObj)
     }
-    async addItemToUser(idUsuario,idItem){
-        console.log("adding item to user",idUsuario)
+    async addItemToUser(idUsuario,idItem,permisoItem){
         let addItemResponse = await this.DAO.update(idUsuario,null,{ $addToSet: { items: {_id:idItem,permiso:"duenio"}} });
         console.log("addItemResponse",addItemResponse)
+        if(addItemResponse.isLeft()){
+            return addItemResponse;
+        }
+        return addItemResponse.getRight();
+    }
+
+    async getUser(idUser){
+        let getUserResult = await new UsuariosLogic().DAO.read(idUser)
+
+        if(getUserResult.isLeft()){
+            return Either.left(["User not found."])
+        }
+        return Either.right(getUserResult.getRight().content[0])
+    }
+    
+    async getUserByMail(userMail){
+        let getUserResult = await new UsuariosLogic().DAO.read({mail: userMail})
+        console.log(getUserResult)
+        if(getUserResult.isLeft()){
+            return Either.left(["User not found."])
+        }
+        return Either.right(getUserResult.getRight().content[0])
     }
 }
 

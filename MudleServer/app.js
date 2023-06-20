@@ -79,7 +79,28 @@ apiProtectedRouter.post('/items',async (req, res) => {
   res.send(result);
 })
 
+apiProtectedRouter.post('/items/compartir',async (req, res) => {
+  if(!req.body.idItem || !req.body.tipoPermiso || !req.body.arrayMailsUsuarios){
+    res.status(400).send("Los campos son: idItem, tipoPermiso ('read','read-write','duenio'), arrayMailsUsuarios. Alguno esta faltando.")
+  }
+
+  let result = await new ItemsLogic().compartirItemCon(req.body);
+  //let serverResponse = Utils.eitherServerResponseToUserResponse(result);
+  //res.send(serverResponse.status,serverResponse.translateToUser());
+  res.send(result);
+})
+
 apiProtectedRouter.get('/items',async (req, res) => {
+  console.log(req.body)
+  console.log("dec token",req.decodedToken)
+  let result = await new ItemsLogic().getUserItems(req.decodedToken.id);
+  let serverResponse = Utils.eitherServerResponseToUserResponse(result);
+  console.log("uguuu",serverResponse)
+  // res.send(serverResponse.status,serverResponse.translateToUser());
+  res.send(serverResponse.content);
+})
+
+apiProtectedRouter.post('/importFromMoodle',async (req, res) => {
   console.log(req.body)
   console.log("dec token",req.decodedToken)
   let result = await new ItemsLogic().getUserItems(req.decodedToken.id);
