@@ -20,6 +20,7 @@ class ItemsLogic{
         return Utils.getObjectInstance(new Item(),inputObj)
     }
     async getUserItems(idUser){
+        console.log(idUser)
         let getUserResult = await new UsuariosLogic().DAO.read(idUser)
         console.log("getUserItems getUserResult",getUserResult.getRight())
         if(getUserResult.isLeft()){

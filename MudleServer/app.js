@@ -82,7 +82,7 @@ apiProtectedRouter.post('/items',async (req, res) => {
 apiProtectedRouter.get('/items',async (req, res) => {
   console.log(req.body)
   console.log("dec token",req.decodedToken)
-  let result = await new ItemsLogic().getUserItems();
+  let result = await new ItemsLogic().getUserItems(req.decodedToken.id);
   let serverResponse = Utils.eitherServerResponseToUserResponse(result);
   console.log("uguuu",serverResponse)
   // res.send(serverResponse.status,serverResponse.translateToUser());

@@ -55,12 +55,13 @@ class MongoDBDAO{
 
   async read(filtro){
     try{
-      if (typeof filtro === 'number') {
+      console.log("filtro",filtro)
+      if (typeof filtro === 'string') {
         filtro = { _id: new ObjectId(filtro) };
-      }
-      if(Utils.isArrayLike(filtro) ){
+      }else if(Utils.isArrayLike(filtro) ){
         filtro = { _id: { $in: filtro.map(id => new ObjectId(id)) } };
       }
+      console.log("EL FILTRO ES:",filtro)
       const resultado = await this.coleccion.find(filtro).toArray();
       return this.resultIsSuccessful(resultado)?Either.right(new ServerResponse(200,[],resultado)):Either.left(new ServerResponse(500,["Error reading from DB."]));
     }catch(exception){
