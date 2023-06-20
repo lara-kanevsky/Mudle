@@ -22,7 +22,6 @@ app.use(express.urlencoded({extended: true}));
 // })
 
 app.post('/login',async function(request, response){
-  console.log("req body",request.body)
   var mail = request.body.mail;
   var password = request.body.password;
   if(!mail || !password) {
@@ -32,7 +31,7 @@ app.post('/login',async function(request, response){
       if(userFound.isRight()) {
           var claim = {
               id: userFound.getRight()._id,
-              role: "admin"
+              tipoUsuario: userFound.getRight().tipoUsuario,
           }
           var token = jsonwebtoken.sign(claim, config.jwtSecret, {
               expiresIn: config.jwtExpiresInSec
@@ -60,7 +59,7 @@ apiProtectedRouter.use(function(request, response, next){
             }
         });
     } else {
-        response.status(401).send("No access token found");
+        response.status(401).send("Necesita un token.");
     }
 });
 
@@ -72,11 +71,22 @@ app.post('/usuarios',async (req, res) => {
   res.send(serverResponse.status,serverResponse.translateToUser());
 })
 
-app.post('/items',async (req, res) => {
+apiProtectedRouter.post('/items',async (req, res) => {
+
+  let result = await new ItemsLogic().insertNewItem(req.decodedToken.id,req.body);
+  //let serverResponse = Utils.eitherServerResponseToUserResponse(result);
+  //res.send(serverResponse.status,serverResponse.translateToUser());
+  res.send(result);
+})
+
+apiProtectedRouter.get('/items',async (req, res) => {
   console.log(req.body)
-  let result = await new ItemsLogic().DAO.insert(req.body);
+  console.log("dec token",req.decodedToken)
+  let result = await new ItemsLogic().getUserItems();
   let serverResponse = Utils.eitherServerResponseToUserResponse(result);
-  res.send(serverResponse.status,serverResponse.translateToUser());
+  console.log("uguuu",serverResponse)
+  // res.send(serverResponse.status,serverResponse.translateToUser());
+  res.send(serverResponse.content);
 })
 
 

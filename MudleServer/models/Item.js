@@ -1,8 +1,9 @@
 module.exports = class Item{
-    constructor(titulo, contenido,permiso) {
+    constructor(titulo, contenido) {
         this.parentNode = -1;
         this.titulo = titulo;
         this.contenido = contenido??"";
-        this.permiso = permiso;
+        this.permiso = "";
+        this.duenio="";
     }
 }

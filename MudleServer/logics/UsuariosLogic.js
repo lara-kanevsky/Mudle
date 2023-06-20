@@ -8,11 +8,12 @@ const Either = require('../models/Either')
 
 class UsuariosLogic{
     constructor(){
-        this.DAO = new MongoDBDAO("usuarios",this.isValidInsert);
+        this.DAO = new MongoDBDAO("usuarios",this.isValidInsert,this.getInstance);
     }
 
     async isValidInsert(inputUser,DAO){
-        let isValid = Utils.basicValidator(new Usuario(),inputUser);
+        let necessaryKeys = ["mail","password"]
+        let isValid = Utils.basicValidator(new Usuario(),inputUser,necessaryKeys);
         console.log("isValid",isValid)
         //console.log("DAO",DAO)
         let mailFoundResponse = await DAO.read({mail:inputUser.mail});
@@ -24,6 +25,14 @@ class UsuariosLogic{
 
             return result;
 
+    }
+    getInstance(inputObj){
+        return Utils.getObjectInstance(new Usuario(),inputObj)
+    }
+    async addItemToUser(idUsuario,idItem){
+        console.log("adding item to user",idUsuario)
+        let addItemResponse = await this.DAO.update(idUsuario,null,{ $addToSet: { items: {_id:idItem,permiso:"duenio"}} });
+        console.log("addItemResponse",addItemResponse)
     }
 }
 

@@ -10,6 +10,7 @@ class AuthenticationLogic{
 
         if(userFoundResponse.isRight()){
             let content = userFoundResponse.getRight().content;
+            console.log(userFoundResponse.getRight().content);
             let user = content.length == 1 ? content[0] : null;
             return content.length == 1 ? Either.right(content[0]) : Either.left();
         }

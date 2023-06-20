@@ -1,12 +1,14 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion,ObjectId  } = require('mongodb');
 const Either = require('../models/Either')
 const Left = require('../models/Left.js')
 const ServerResponse = require('../models/ServerResponse.js')
 const Right = require('../models/Right.js')
+const Utils = require('../models/Utils')
+
 const uri = "mongodb+srv://larakanevsky:dongato@cluster0.uwuoyog.mongodb.net/?retryWrites=true&w=majority";
 
 class MongoDBDAO{
-  constructor(tableName,entityValidator){
+  constructor(tableName,entityValidator,getInstance){
       this.client = new MongoClient(uri, {
           serverApi: {
             version: ServerApiVersion.v1,
@@ -17,6 +19,7 @@ class MongoDBDAO{
       this.db = this.client.db("mudle");
       this.coleccion=this.db.collection(tableName);
       this.entityValidator = entityValidator??(()=>{return true});
+      this.getInstance = getInstance??(()=>({}));
   }
 
   async insert(objeto){
@@ -25,55 +28,47 @@ class MongoDBDAO{
       if(isValid.isLeft()){
         return Either.left(new ServerResponse(400,isValid.getLeft()))
       }
-      
-      const resultado = await this.coleccion.insertOne(objeto);
-  
-      return this.resultIsSuccessful(resultado)?Either.right(new ServerResponse(201)):Either.left(new ServerResponse(500,["Error inserting to DB."]))
+      let toInsert =this.getInstance(objeto);
+      const resultado = await this.coleccion.insertOne(toInsert);
+      return this.resultIsSuccessful(resultado)?Either.right(new ServerResponse(201,[],resultado)):Either.left(new ServerResponse(500,["Error inserting to DB."]))
     }catch(exception){
       return Either.left(new ServerResponse(500,[exception]))
     }
   }
 
-  async update(objeto) {
-    const filter = { id: objeto.id };
-    const update = { $set: objeto};
+  async update(id,objeto,updateObj) {
+    const filter = { _id: new ObjectId(id) };
+    const update =updateObj?? { $set: objeto};
 
     const result = await this.coleccion.updateOne(filter, update);
-
-    return this.resultIsSuccessful(result)?Either.right(objeto):Either.left("No se actualizo correctamente")
+    return this.resultIsSuccessful(result)?Either.right(result):Either.left("No se actualizo correctamente")
   }
 
-  async delete(id){
+  // async delete(id){
 
-    // const filter = { id:{$eq: id} };
-    const result = await this.coleccion.deleteMany();
+  //   // const filter = { id:{$eq: id} };
+  //   const result = await this.coleccion.deleteMany();
   
-    console.log(`${result.deletedCount} document(s) deleted.`);
-    return this.resultIsSuccessful(result)?Either.right(id):Either.left("No se borro correctamente")
-  }
+  //   console.log(`${result.deletedCount} document(s) deleted.`);
+  //   return this.resultIsSuccessful(result)?Either.right(id):Either.left("No se borro correctamente")
+  // }
 
   async read(filtro){
     try{
+      if (typeof filtro === 'number') {
+        filtro = { _id: new ObjectId(filtro) };
+      }
+      if(Utils.isArrayLike(filtro) ){
+        filtro = { _id: { $in: filtro.map(id => new ObjectId(id)) } };
+      }
       const resultado = await this.coleccion.find(filtro).toArray();
-      console.log("resultado",resultado)
       return this.resultIsSuccessful(resultado)?Either.right(new ServerResponse(200,[],resultado)):Either.left(new ServerResponse(500,["Error reading from DB."]));
     }catch(exception){
       return Either.left(new ServerResponse(500,[exception]))
     }
   }
-
     resultIsSuccessful(result){
       return result.acknowledged || result.length!=null;
     }
 }
 module.exports = MongoDBDAO;
-// async function run() {
-//   try {
-//     await this.client.connect();
-//     await this.client.db("admin").command({ ping: 1 });
-//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//   } finally {
-//     await this.client.close();
-//   }
-// }
-// run().catch(console.dir);
