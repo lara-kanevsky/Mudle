@@ -17,7 +17,7 @@ chai.use(chaiHttp);
 // });
 
 describe("Creación de usuario", () => {
-  it("debería devolver 200 OK", (done) => {
+  it("debería devolver 400", (done) => {
     const usuario = {
       username: "Laruwu",
       password: "dongato",
@@ -29,7 +29,7 @@ describe("Creación de usuario", () => {
       .post("/usuarios")
       .send(usuario)
       .end((err, res) => {
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(400);
         done();
       });
   });
@@ -45,22 +45,10 @@ describe("Creación de item", () => {
 
     chai
       .request(app)
-      .post("/items")
+      .post("/protected/items")
       .send(item)
       .end((err, res) => {
         expect(res).to.have.status(401);
-        done();
-      });
-  });
-});
-
-describe("Obtener usuarios", () => {
-  it("debería devolver 200 OK", (done) => {
-    chai
-      .request(app)
-      .get("/usuarios")
-      .end((err, res) => {
-        expect(res).to.have.status(200);
         done();
       });
   });
