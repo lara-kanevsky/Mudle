@@ -4,7 +4,7 @@
   "description": "tp2",
   "main": "app.js",
   "scripts": {
-    "test": "tests"
+    "test": "mocha tests/*.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +15,8 @@
     "jwt-decode": "^3.1.2",
     "mocha": "^10.2.0",
     "mongodb": "5.5"
+  },
+  "devDependencies": {
+    "chai-http": "^4.4.0"
   }
 }
