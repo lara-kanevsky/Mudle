@@ -27,7 +27,7 @@ El sistema de gestión de material de estudio y trackeo de tareas y eventos es u
 	- El usuario puede crear secciones y compartirlas con otros usuarios de la plataforma mediante un link de invitacion.
 	- Este link puede dar diferentes permisos, como de lectura o de escritura.
 	- Un usuario sin cuenta puede ingresar y ver mediante un link compartido, pero para la escritura tiene que estar logeado.
-*- Reglas de items:*
+- *Reglas de items:*
 	- Los items van a poder pertenecer a mas de una seccion. Esto va a permitir poder hacer secciones con una recopilacion de items seleccionados segun algun criterio.
 	- Los items van a tener diferentes tipos.
 	- Un item puede contener archivos adjuntos en diferentes formatos.
