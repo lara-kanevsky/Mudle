@@ -6,6 +6,7 @@ module.exports = class Item{
         this.permiso = "";
         this.duenio="";
         this.path = "";
-        this.exported=null;
+        this.tipoItem = "";
+        this.exportedId=null;
     }
 }

@@ -1,5 +1,5 @@
 const express = require('express')
-
+const http = require('http');
 
 const config = require('./config')
 const Either = require('./models/Either')
@@ -74,6 +74,22 @@ app.post('/usuarios',async (req, res) => {
   res.send(serverResponse.status,serverResponse.translateToUser());
 })
 
+apiProtectedRouter.post('/usuarios/moodleCredentials',async (req, res) => {
+  const userLogic= new UsuariosLogic();
+  let userResponse = await userLogic.getUser(req.decodedToken.id)
+
+let username = req.body.username;
+
+let password = req.body.password;
+
+  let user = userResponse.getRight();
+  user.moodleCredentials = {username:username,password:password}
+  let result = await userLogic.DAO.update(req.decodedToken.id,user);
+  //let serverResponse = Utils.eitherServerResponseToUserResponse(result);
+  //res.send(serverResponse.status,serverResponse.translateToUser());
+  res.send(result.getRight())
+})
+
 apiProtectedRouter.post('/items',async (req, res) => {
 
   let result = await new ItemsLogic().insertNewItem(req.decodedToken.id,req.body,"duenio");
@@ -111,28 +127,63 @@ apiProtectedRouter.post('/importFromMoodle',async (request, response) => {
   console.log(request.body)
   console.log("dec token",request.decodedToken)
 
-let importResult =await new ImportarLogic().importarDeMoodle()
-console.log("importResult",importResult)
+  let usuarioResponse = await new UsuariosLogic().getUser(request.decodedToken.id);
+  if(usuarioResponse.isLeft()){
+    return usuarioResponse;
+  }
+  let usuario = usuarioResponse.getRight();
+  if(usuario.moodleCredentials==null){
+return Either.left("El usuario no tiene cargadas las credenciales de Moodle.")
+  }
+  console.log("mod cred",usuario.moodleCredentials)
+
+// let importResult =await new ImportarLogic().importarDeMoodle(request.decodedToken.id)
+// console.log("importResult",importResult)
+// response.send(importResult)
+
+const postData = JSON.stringify({
+  username:usuario.moodleCredentials.username,
+  password:usuario.moodleCredentials.password
+});
+
+const options = {
+  hostname: 'localhost',
+  port: 3001,
+  path: '/items',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(postData)
+  }
+};
+  const req = http.request(options, (res) => {
+    let respuesta = '';
   
-  // const req = http.request(options, (res) => {
-  //   let respuesta = '';
+    res.on('data', (chunk) => {
+      respuesta += chunk;
+    });
   
-  //   res.on('data', (chunk) => {
-  //     respuesta += chunk;
-  //   });
+    res.on('end',async () => {
+      console.log(`Response: ${respuesta}`);
+
+      let items = await new ImportarLogic().parseAPIItems(JSON.parse(respuesta),request.decodedToken.id);
+      for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        new ItemsLogic().insertNewItem(request.decodedToken.id,element,"duenio")
+      }
+      //new ItemsLogic().insertNewItem(request.decodedToken.id,)
+      //new UsuariosLogic.addItemToUser(request.decodedToken.id,idItem,permisoItem)
+
+      response.send(items);
+    });
+  });
   
-  //   res.on('end', () => {
-  //     console.log(`Response: ${respuesta}`);
-  //     response.send(JSON.parse(respuesta));
-  //   });
-  // });
+  req.on('error', (error) => {
+    console.error(`Request error: ${error}`);
+  });
   
-  // req.on('error', (error) => {
-  //   console.error(`Request error: ${error}`);
-  // });
-  
-  // req.write(postData);
-  // req.end();
+  req.write(postData);
+  req.end();
 
 
   // let result = await new ItemsLogic().getUserItems(req.decodedToken.id);
