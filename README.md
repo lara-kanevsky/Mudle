@@ -32,7 +32,7 @@ El sistema de gestión de material de estudio y trackeo de tareas y eventos es u
 	- Los items van a tener diferentes tipos.
 	- Un item puede contener archivos adjuntos en diferentes formatos.
 	- Los items van a poder tener tags para luego poder hacer una busqueda por tags.
-*- Reglas de filtros:*
+- *Reglas de filtros:*
 	- Se va a poder filtrar tan especifica o generalmente como el usuario quiera. Puede filtrar cada item que exista en su cuenta o dentro de una seccion o dentro de un tag.
 - *Reglas de eventos:*
 	- Un evento va a poder configurarse para que avise cuando se acerca la fecha.
