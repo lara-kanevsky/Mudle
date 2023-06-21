@@ -37,6 +37,7 @@ class MongoDBDAO{
   }
 
   async update(id,objeto,updateObj) {
+    console.log("id to update:",id)
     const filter = { _id: new ObjectId(id) };
     const update =updateObj?? { $set: objeto};
 

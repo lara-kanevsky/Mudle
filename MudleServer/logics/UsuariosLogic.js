@@ -30,7 +30,7 @@ class UsuariosLogic{
         return Utils.getObjectInstance(new Usuario(),inputObj)
     }
     async addItemToUser(idUsuario,idItem,permisoItem){
-        let addItemResponse = await this.DAO.update(idUsuario,null,{ $addToSet: { items: {_id:idItem,permiso:"duenio"}} });
+        let addItemResponse = await this.DAO.update(idUsuario,null,{ $addToSet: { items: {_id:idItem,permiso:permisoItem}} });
         console.log("addItemResponse",addItemResponse)
         if(addItemResponse.isLeft()){
             return addItemResponse;

@@ -5,5 +5,7 @@ module.exports = class Item{
         this.contenido = contenido??"";
         this.permiso = "";
         this.duenio="";
+        this.path = "";
+        this.exported=null;
     }
 }

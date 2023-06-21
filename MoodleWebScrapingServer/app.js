@@ -36,7 +36,7 @@ app.post('/login',async function(request, response){
 
 });
 
-app.get('/items',async function(request, response){
+app.post('/items',async function(request, response){
         const username = request.body.username;
         const password = request.body.password;
         if(!username || !password){

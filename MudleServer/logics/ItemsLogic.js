@@ -35,7 +35,6 @@ class ItemsLogic{
 
     async insertNewItem(idUsuario,userInput,permisoItem){
         userInput.duenio = idUsuario;
-        userInput.permiso = permisoItem;
 
         let insertItemResponse = await this.DAO.insert(userInput);
 
@@ -43,17 +42,27 @@ class ItemsLogic{
             return insertItemResponse.getLeft();
         }
 
-        let addItemToUserResponse = new UsuariosLogic().addItemToUser(idUsuario,insertItemResponse.getRight().content.insertedId);
-        return addItemToUserResponse
+        let addItemToUserResponse = new UsuariosLogic().addItemToUser(idUsuario,insertItemResponse.getRight().content.insertedId,permisoItem);
+        return Either.right(new ServerResponse(201,[],addItemToUserResponse));
     }
 
-    async compartirItemCon(idItem,tipoPermiso,arrayUsuarios){
+    async compartirItemCon(idItem,tipoPermiso,mail){
         const usuariosLogic = new UsuariosLogic();
+            let userId = await usuariosLogic.getUserByMail(mail);
+        if(userId.isLeft()){
+     return userId;
+    }
+            usuariosLogic.addItemToUser(userId.getRight()._id,idItem,tipoPermiso)
+        return Either.right("Compartido con : "+ mail)
+    }
 
-        return arrayUsuarios.map(userId => {
-            usuariosLogic.addItemToUser(userId,idItem,tipoPermiso)
-        });
-
+    async compartirItemConMuchos(idItem,tipoPermiso,mails){
+        let response = [];
+        for (let index = 0; index < mails.length; index++) {
+            const element = mails[index];
+            response.push(await this.compartirItemCon(idItem,tipoPermiso,element));
+        }
+return response;
     }
 }
 module.exports = ItemsLogic

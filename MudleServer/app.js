@@ -1,10 +1,13 @@
 const express = require('express')
+
+
 const config = require('./config')
 const Either = require('./models/Either')
 const Left = require('./models/Left')
 const Right = require('./models/Right')
 const UsuariosLogic = require('./logics/UsuariosLogic')
 const AuthenticationLogic = require('./logics/AuthenticationLogic')
+const ImportarLogic = require('./logics/ImportarLogic')
 const ItemsLogic = require('./logics/ItemsLogic')
 var jsonwebtoken = require("jsonwebtoken");
 const Utils = require('./models/Utils')
@@ -73,18 +76,22 @@ app.post('/usuarios',async (req, res) => {
 
 apiProtectedRouter.post('/items',async (req, res) => {
 
-  let result = await new ItemsLogic().insertNewItem(req.decodedToken.id,req.body);
-  //let serverResponse = Utils.eitherServerResponseToUserResponse(result);
-  //res.send(serverResponse.status,serverResponse.translateToUser());
-  res.send(result);
+  let result = await new ItemsLogic().insertNewItem(req.decodedToken.id,req.body,"duenio");
+  let serverResponse = Utils.eitherServerResponseToUserResponse(result);
+  res.status(serverResponse.status).send(serverResponse.translateToUser());
+  //res.send(result);
 })
 
 apiProtectedRouter.post('/items/compartir',async (req, res) => {
-  if(!req.body.idItem || !req.body.tipoPermiso || !req.body.arrayMailsUsuarios){
+  console.log("BODI:",req.body)
+  const idItem = req.body.idItem;
+  const tipoPermiso = req.body.tipoPermiso;
+  const arrayMailsUsuarios = req.body.arrayMailsUsuarios;
+  if(!idItem || !tipoPermiso || !arrayMailsUsuarios){
     res.status(400).send("Los campos son: idItem, tipoPermiso ('read','read-write','duenio'), arrayMailsUsuarios. Alguno esta faltando.")
   }
 
-  let result = await new ItemsLogic().compartirItemCon(req.body);
+  let result = await new ItemsLogic().compartirItemConMuchos(idItem,tipoPermiso,arrayMailsUsuarios);
   //let serverResponse = Utils.eitherServerResponseToUserResponse(result);
   //res.send(serverResponse.status,serverResponse.translateToUser());
   res.send(result);
@@ -100,14 +107,39 @@ apiProtectedRouter.get('/items',async (req, res) => {
   res.send(serverResponse.content);
 })
 
-apiProtectedRouter.post('/importFromMoodle',async (req, res) => {
-  console.log(req.body)
-  console.log("dec token",req.decodedToken)
-  let result = await new ItemsLogic().getUserItems(req.decodedToken.id);
-  let serverResponse = Utils.eitherServerResponseToUserResponse(result);
-  console.log("uguuu",serverResponse)
-  // res.send(serverResponse.status,serverResponse.translateToUser());
-  res.send(serverResponse.content);
+apiProtectedRouter.post('/importFromMoodle',async (request, response) => {
+  console.log(request.body)
+  console.log("dec token",request.decodedToken)
+
+let importResult =await new ImportarLogic().importarDeMoodle()
+console.log("importResult",importResult)
+  
+  // const req = http.request(options, (res) => {
+  //   let respuesta = '';
+  
+  //   res.on('data', (chunk) => {
+  //     respuesta += chunk;
+  //   });
+  
+  //   res.on('end', () => {
+  //     console.log(`Response: ${respuesta}`);
+  //     response.send(JSON.parse(respuesta));
+  //   });
+  // });
+  
+  // req.on('error', (error) => {
+  //   console.error(`Request error: ${error}`);
+  // });
+  
+  // req.write(postData);
+  // req.end();
+
+
+  // let result = await new ItemsLogic().getUserItems(req.decodedToken.id);
+  // let serverResponse = Utils.eitherServerResponseToUserResponse(result);
+  // console.log("uguuu",serverResponse)
+  // // res.send(serverResponse.status,serverResponse.translateToUser());
+  // res.send(serverResponse.content);
 })
 
 
