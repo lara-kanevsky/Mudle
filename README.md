@@ -7,7 +7,7 @@ El sistema de gestión de material de estudio y trackeo de tareas y eventos es u
 - El usuario puede cargar cursos o secciones y agregarle tareas, bibliografia, apuntes etc. Esto lo puede hacer de forma manual o *automatica*, conectandose con moodle.
 - El usuario puede marcar como realizadas tareas y adjuntar archivos ahi mismo.
 - El usuario puede compartir una seccion o curso y otorgar permiso de lectura o modificacion a otro usuario del sitio.
-- Se pueden cargar eventos como examenes, y estos se pueden configurar para conectarse con diferentes items (ejercisios o bibliografia) y agregarles un tag con el nombre de ese examen.
+- Se pueden cargar eventos como examenes, y estos se pueden configurar para conectarse con diferentes items (ejercicios o bibliografia) y agregarles un tag con el nombre de ese examen.
 - Se puede filtrar por estos eventos.
 - Los eventos pueden tener una barra de progreso con la cantidad de items asignados y los completados.
 - Se puede crear un backup de lo que se seleccione.
