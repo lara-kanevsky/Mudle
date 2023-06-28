@@ -5,7 +5,8 @@ const ServicioItem = require("../Servicios/ServicioItem");
 const rutaItems = express.Router();
 
 rutaItems.post('/',async (req, res) => {
-    res.send(await new ServicioItem().nuevoItem(req.body));
+    let userId = req.decodedToken.id;
+    res.send(await new ServicioItem().nuevoItem(req.body,userId));
 });
 
 rutaItems.get('/',async (req, res) => {

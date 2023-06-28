@@ -27,7 +27,7 @@ rutaAutenticacion.post('/login',async function(request, response){
             var token = jsonwebtoken.sign(claim, config.jwtSecret, {
                 expiresIn: config.jwtExpiresInSec
             });
-            response.send("JWT: " + token);
+            response.send(JSON.stringify(token));
         } else {
             return response.status(401).end("Mail o contraseña incorrectos");
         }

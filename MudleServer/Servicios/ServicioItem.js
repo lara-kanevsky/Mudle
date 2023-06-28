@@ -6,9 +6,14 @@ class ServicioItem{
         this.repositorio = new RepositorioItem();
     }
 
-    async nuevoItem(item){
+    async nuevoItem(itemInfo,userId){
         //Validacion
-        return await this.repositorio.insertarItem(item);
+        let servicioUsuario = await new ServicioUsuario();
+        let usuario = await servicioUsuario.getUsuarioById(userId)
+        let item = await this.repositorio.insertarItem(itemInfo);
+        let itemId = item.insertedId;
+        await servicioUsuario.addItemToUser(itemId,usuario.mail,itemInfo.permiso)
+        return item;
     }
     
     async getUserItems(idUser){

@@ -14,7 +14,7 @@ class ServicioUsuario{
     }
 
     async nuevoUsuario(usuario){
-        //Validacion
+        usuario.items = [];
         return await this.repositorio.insertarUsuario(usuario);
     }
 
@@ -26,8 +26,9 @@ class ServicioUsuario{
 
     async addItemToUser(idItem,mail,tipoPermiso){
         //Validar que no tiene el item ya
-        let usuario = await this.repositorio.getUserByEmail(mail);
+        let usuario = await this.getUserByEmail(mail);
         let item = {_id:idItem,permiso:tipoPermiso};
+        console.log(item);
         usuario.items.push(item);
         return this.repositorio.actualizarUsuario(usuario._id,usuario);
     }

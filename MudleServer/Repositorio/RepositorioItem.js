@@ -1,9 +1,14 @@
 const DAO = require("../DAOs/MongoDao.js")
 const {ObjectId} = require('mongodb');
 
-class RepositorioUsuario{
+class RepositorioItem{
     constructor() {
         this.dao = DAO;
+    }
+
+    async getItemFromId(itemId){
+        let items = await this.dao.db("mudle").collection("items");
+        return await items.find({ _id: itemId });
     }
     
     async getItemsFromIds(arrayIds){
@@ -17,4 +22,4 @@ class RepositorioUsuario{
     }
 }
 
-module.exports = RepositorioUsuario;
+module.exports = RepositorioItem;
