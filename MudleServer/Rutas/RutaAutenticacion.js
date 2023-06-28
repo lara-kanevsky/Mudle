@@ -23,6 +23,7 @@ rutaAutenticacion.post('/login',async function(request, response){
             var claim = {
                 id: userFound._id,
                 tipoUsuario: userFound.tipoUsuario,
+                username: userFound.username,
             }
             var token = jsonwebtoken.sign(claim, config.jwtSecret, {
                 expiresIn: config.jwtExpiresInSec
