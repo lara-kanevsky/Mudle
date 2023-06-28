@@ -6,6 +6,7 @@ const ServicioImportar = require("../Servicios/ServicioImportar");
 
 const rutaImportacion = express.Router();
 rutaImportacion.post('/',async (request, response) => {
+  try{
     let idUsuario = request.decodedToken.id;
     let servicioUsuario = new ServicioUsuario();
     let usuario = await servicioUsuario.getUsuarioById(idUsuario)
@@ -54,7 +55,10 @@ if(tieneCredencialesMoodle){
         req.end();
 }else{
     response.send("No tiene credenciales de Moodle cargadas en su usuario. Puede cargarlas e intentar de nuevo.")
-}
+  }
+  }catch(error){
+    res.status(500).send(error)
+  }
   })
 
   module.exports = rutaImportacion;

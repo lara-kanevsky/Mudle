@@ -13,6 +13,7 @@ rutaAutenticacion.post('/registrarse',async (req, res) => {
 });
 
 rutaAutenticacion.post('/login',async function(request, response){
+    try{
     var mail = request.body.mail;
     var password = request.body.password;
     if(!mail || !password) {
@@ -32,6 +33,9 @@ rutaAutenticacion.post('/login',async function(request, response){
         } else {
             return response.status(401).end("Mail o contraseña incorrectos");
         }
+    }
+    }catch(error){
+        res.status(500).send(error)
     }
   });
 
