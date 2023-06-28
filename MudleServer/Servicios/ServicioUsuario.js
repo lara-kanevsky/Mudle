@@ -5,6 +5,10 @@ class ServicioUsuario{
         this.repositorio = new RepositorioUsuario();
     }
 
+    async usuarioTieneItem(userId,itemId) {
+        return await this.repositorio.getUser(userId);
+    }
+
     async getUsuarioById(id) {
         return await this.repositorio.getUserById(id);
     }
@@ -31,6 +35,19 @@ class ServicioUsuario{
         usuario.items.push(item);
         return this.repositorio.actualizarUsuario(usuario._id,usuario);
     }
+
+    async removeItemFromUser(idUser, idItem) {
+        let usuario = await this.getUsuarioById(idUser);
+        const indexItem = usuario.items.findIndex(item => item._id == idItem);
+        console.log(indexItem)
+        if (indexItem !== -1) {
+          usuario.items.splice(indexItem, 1);
+          return this.repositorio.actualizarUsuario(idUser, usuario);
+        } else{
+          throw new Error('Item no encontrado');
+        }
+      }
+      
 
     async getUsuarioItemsId(idUsuario){
         let usuario = await this.getUsuarioById(idUsuario);
