@@ -29,10 +29,16 @@ class ServicioUsuario{
     }
 
     async addItemToUser(idItem,mail,tipoPermiso){
-        //Validar que no tiene el item ya
         let usuario = await this.getUserByEmail(mail);
         let item = {_id:idItem,permiso:tipoPermiso};
         usuario.items.push(item);
+        return this.repositorio.actualizarUsuario(usuario._id,usuario);
+    }
+
+    async addEventoToUser(eventoId,mail){
+        let usuario = await this.getUserByEmail(mail);
+        let eventos = {_id:eventoId};
+        usuario.eventos.push(item);
         return this.repositorio.actualizarUsuario(usuario._id,usuario);
     }
 

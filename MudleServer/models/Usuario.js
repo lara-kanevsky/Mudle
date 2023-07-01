@@ -5,6 +5,7 @@ class Usuario{
         this.password = password;
         this.tipoUsuario = tipoUsuario??"default";
         this.items = [];
+        this.eventos = [];
         this.moodleCredentials = null;
     }
 }

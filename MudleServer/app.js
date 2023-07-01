@@ -30,6 +30,7 @@ app.use("/protected", apiProtectedRouter);
 
 apiProtectedRouter.use("/usuarios", require('./Rutas/RutaUsuario'))
 apiProtectedRouter.use("/items", require('./Rutas/RutaItem'))
+apiProtectedRouter.use("/eventos", require('./Rutas/RutaEvento'))
 apiProtectedRouter.use("/importFromMoodle", require('./Rutas/RutaImportacion'))
 
 app.listen(port, () => {
