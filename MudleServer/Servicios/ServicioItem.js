@@ -8,7 +8,7 @@ class ServicioItem{
 
     async nuevoItem(itemInfo,userId){
         //Validacion
-        let servicioUsuario = await new ServicioUsuario();
+        let servicioUsuario = new ServicioUsuario();
         let usuario = await servicioUsuario.getUsuarioById(userId)
         let item = await this.repositorio.insertarItem(itemInfo);
         let itemId = item.insertedId.toString();
@@ -17,7 +17,7 @@ class ServicioItem{
     }
 
     async modificarItem(itemId,userId,itemNuevo){
-        let servicioUsuario = await new ServicioUsuario();
+        let servicioUsuario = new ServicioUsuario();
         let usuario = await servicioUsuario.getUsuarioById(userId);
         let permisosUsuario = usuario.items.find(item => item._id.toString() === itemId);
         if(permisosUsuario.permiso === 'read/write'){
@@ -35,8 +35,11 @@ class ServicioItem{
     async getUserItems(idUser){
         let userItemsId = await new ServicioUsuario().getUsuarioItemsId(idUser)
         let itemsIds = userItemsId.map(item=>item._id);
+        return await this.getItems(itemsIds);
+    }
 
-        return await this.repositorio.getItemsFromIds(itemsIds);
+    async getItems(itemsArray){
+        return await this.repositorio.getItemsFromIds(itemsArray);
     }
 
     async compartirItemConMuchos(idItem,mails,tipoPermiso){

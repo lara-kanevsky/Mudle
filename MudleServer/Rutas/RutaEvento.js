@@ -9,27 +9,31 @@ rutaEventos.post('/', async (req, res) => {
       const evento = await new ServicioEvento().crearNuevoEvento(req.body, userId);
       res.status(200).json(evento);
     } catch (error) {
-      res.status(500).json({ error: 'An error occurred.', message: error.message });
+      res.status(500).json({ error: 'Ocurrió un error', message: error.message });
     }
   });
   
 
-rutaEventos.put('/:eventoId', async (req, res) => {
+  rutaEventos.put('/:eventoId/:itemId', async (req, res) => {
+    try {
+      let userId = req.decodedToken.id;
+      const eventoId = req.params.eventoId;
+      const itemId = req.params.itemId;
+      const updatedEvento = await new ServicioEvento().agregarItemAEvento(eventoId, itemId, userId);
+      res.json(updatedEvento);
+    } catch (error) {
+      res.status(500).json({ error: 'Ocurrió un error', message: error.message });
+    }
+  });  
+
+rutaEventos.get('/:eventoId', async (req, res) => {
   try {
     let userId = req.decodedToken.id;
     const eventoId = req.params.eventoId;
-    res.send(await new ServicioEvento().actualizarEvento(eventoId, userId, req.body));
+    const eventosObtenidos = await new ServicioEvento().getItemsEvento(eventoId,userId)
+    res.json(eventosObtenidos);
   } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-rutaEventos.get('/', async (req, res) => {
-  try {
-    let userId = req.decodedToken.id;
-    res.send(await new ServicioEvento().getUsuarioEventos(userId));
-  } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json({ error: 'Ocurrió un error', message: error.message });
   }
 });
 
