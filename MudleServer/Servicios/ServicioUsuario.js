@@ -1,4 +1,4 @@
-const RepositorioUsuario = require('../Repositorio/RepositorioUsuario.js')
+const RepositorioUsuario = require('../Repositorio/RepositorioUsuario.js');
 
 class ServicioUsuario{
     constructor(){
@@ -63,6 +63,24 @@ class ServicioUsuario{
     async tieneCredencialesMoodle(idUsuario){
         let usuario = await this.getUsuarioById(idUsuario);
         return usuario.moodleCredentials!=null;
+    }
+
+    async buscarEventosProximos(idUsuario){
+        const ServicioEvento = require('./ServicioEvento.js');
+        let usuario = await this.getUsuarioById(idUsuario);
+        const servicioEvento = new ServicioEvento();
+        const hoy = new Date();
+        const dosSemanas = new Date(hoy);
+        dosSemanas.setDate(hoy.getDate() + 15);
+        let eventosProximos = [];
+        for (const eventoId of usuario.eventos) {
+            const evento = await servicioEvento.getEventoById(eventoId);
+            const fechaEvento = new Date(evento.fecha);
+            if (fechaEvento <= dosSemanas) {
+                eventosProximos.push(evento);
+            }
+        }
+        return eventosProximos;
     }
 }
 

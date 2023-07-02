@@ -27,9 +27,10 @@ rutaItems.put('/:itemId', async (req, res) => {
 rutaItems.get('/',async (req, res) => {
   try{
     let userId = req.decodedToken.id;
-    res.send(await new ServicioItem().getUserItems(userId));
+    const items = await new ServicioItem().getUserItems(userId);
+    res.status(200).json(items);
   }catch(error){
-    res.status(500).send(error)
+    res.status(500).json({ error: 'Ocurrió un error', message: error.message });
   }
   })
 

@@ -7,7 +7,6 @@ class RepositorioUsuario{
     }
 
     async getUserById(idUser){
-        await this.dao.connect();
         let usuarios = await this.dao.db("mudle").collection("usuarios");
         return await usuarios.findOne({ _id: new ObjectId(idUser) })
     }
