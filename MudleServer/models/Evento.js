@@ -27,7 +27,7 @@ module.exports = class Evento{
         const now = new Date();
         const cuandoNotificar = new Date(now);
         cuandoNotificar.setDate(new Date(this.fecha).getDate()-parseInt(this.avisarConAnticipacion))
-
+        console.log(cuandoNotificar)
         return !this.isExpired() && !this.leido && cuandoNotificar<new Date()
     }
 }

@@ -56,7 +56,7 @@ class ServicioEvento {
   
  parseEvento(eventoRaw){
   let evento = new Evento(eventoRaw.titulo,eventoRaw.fecha,eventoRaw.avisarConAnticipacion);
-  evento.items = evento.items;
+  evento.items = eventoRaw.items;
   evento.leido = evento.leido;
   return evento;
   }
