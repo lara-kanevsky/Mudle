@@ -42,7 +42,7 @@ class ServicioEvento {
   async getItemsEvento(idEvento,idUser) {
     let servicioUsuario = new ServicioUsuario();
     let usuario = await servicioUsuario.getUsuarioById(idUser);
-    if(usuario.eventos.includes(idEvento)){
+    if(usuario.eventos.some(eId=>eId._id==idEvento)){
       let evento = await this.getEventoById(idEvento);
       let servicioItem = new ServicioItem();
       return servicioItem.getItems(evento.items);
