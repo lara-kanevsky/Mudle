@@ -52,8 +52,7 @@ class ServicioUsuario{
         } else{
           throw new Error('Item no encontrado');
         }
-      }
-      
+    }
 
     async getUsuarioItemsId(idUsuario){
         let usuario = await this.getUsuarioById(idUsuario);

@@ -19,9 +19,9 @@ class ServicioEvento {
     }
     let servicioUsuario = new ServicioUsuario();
     let usuario = await servicioUsuario.getUsuarioById(userId)
+    eventoInfo.items = [];
     let eventoResponse = await this.repositorio.insertarEvento(eventoInfo);
     let eventoId = eventoResponse.insertedId.toString();
-    eventoResponse.items = [];
     await servicioUsuario.addEventoToUser(eventoId,usuario.mail)
     return eventoResponse;
   }
@@ -29,9 +29,8 @@ class ServicioEvento {
   async agregarItemAEvento(idEvento, idItem, idUser) {
       let servicioUsuario = new ServicioUsuario();
       let usuario = await servicioUsuario.getUsuarioById(idUser);
-      if(usuario.eventos.includes(idEvento)){
+      if(usuario.eventos.some(eId=>eId._id==idEvento)){
         let evento = await this.getEventoById(idEvento);
-        console.log(evento)
         evento.items.push(idItem);
         return this.repositorio.actualizarEvento(idEvento,evento);
       }
