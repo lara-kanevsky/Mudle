@@ -19,6 +19,7 @@ class ServicioUsuario{
 
     async nuevoUsuario(usuario){
         usuario.items = [];
+        usuario.eventos = [];
         return await this.repositorio.insertarUsuario(usuario);
     }
 
@@ -37,15 +38,14 @@ class ServicioUsuario{
 
     async addEventoToUser(eventoId,mail){
         let usuario = await this.getUserByEmail(mail);
-        let eventos = {_id:eventoId};
-        usuario.eventos.push(item);
+        let evento = {_id:eventoId,leido:false}
+        usuario.eventos.push(evento);
         return this.repositorio.actualizarUsuario(usuario._id,usuario);
     }
 
     async removeItemFromUser(idUser, idItem) {
         let usuario = await this.getUsuarioById(idUser);
         const indexItem = usuario.items.findIndex(item => item._id == idItem);
-        console.log(indexItem)
         if (indexItem !== -1) {
           usuario.items.splice(indexItem, 1);
           return this.repositorio.actualizarUsuario(idUser, usuario);
@@ -69,17 +69,20 @@ class ServicioUsuario{
         const ServicioEvento = require('./ServicioEvento.js');
         let usuario = await this.getUsuarioById(idUsuario);
         const servicioEvento = new ServicioEvento();
-        const hoy = new Date();
-        const dosSemanas = new Date(hoy);
-        dosSemanas.setDate(hoy.getDate() + 15);
+
         let eventosProximos = [];
-        for (const eventoId of usuario.eventos) {
-            const evento = await servicioEvento.getEventoById(eventoId);
-            const fechaEvento = new Date(evento.fecha);
-            if (fechaEvento <= dosSemanas) {
+
+        for (let eventoId of usuario.eventos) {
+            const eventoResponse = await servicioEvento.getEventoById(eventoId._id);
+            let evento = servicioEvento.parseEvento(eventoResponse);
+            evento.leido = eventoId.leido;
+            if (evento.deberiaNotificar()) {
+                let eventoFound = usuario.eventos.find(idEvento =>idEvento._id ==eventoId._id)
+                eventoFound.leido = true;
                 eventosProximos.push(evento);
             }
         }
+        this.repositorio.actualizarUsuario(idUsuario,usuario)
         return eventosProximos;
     }
 }
